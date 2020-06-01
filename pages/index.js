@@ -10,6 +10,7 @@ import {
   TextField,
   Frame,
   Spinner,
+  Banner,
 } from "@shopify/polaris";
 import { Query } from "react-apollo";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -67,6 +68,7 @@ const Index = () => {
   ] = useMutation(CREATE_PRODUCT);
   const [showQuery, setShowQuery] = useState(false);
   const [showMutation, setShowMutation] = useState(false);
+  const [showSuccessBanner, setShowSuccessBanner] = useState(false);
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [productNameError, setProductNameError] = useState("");
@@ -96,6 +98,7 @@ const Index = () => {
 
       setProductNameError("");
       setProductDescriptionError("");
+      setShowSuccessBanner(true);
     } else {
       if (!productName) {
         setProductNameError("Product name is required");
@@ -171,6 +174,22 @@ const Index = () => {
               >
                 <Form onSubmit={onSubmitMutation}>
                   <FormLayout>
+                    {createProductData && showSuccessBanner && (
+                      <Banner
+                        title={`Product “${createProductData.productCreate.product.title}” successfully created.`}
+                        status="success"
+                        action={{
+                          content: "Preview product page",
+                          external: true,
+                          url:
+                            createProductData.productCreate.product
+                              .onlineStorePreviewUrl,
+                        }}
+                        onDismiss={() => {
+                          setShowSuccessBanner(false);
+                        }}
+                      />
+                    )}
                     <TextField
                       label="Product Name"
                       onChange={(x) => setProductName(x)}
