@@ -8,6 +8,8 @@ import {
   FormLayout,
   Form,
   TextField,
+  Frame,
+  Spinner,
 } from "@shopify/polaris";
 import { Query } from "react-apollo";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
@@ -110,77 +112,96 @@ const Index = () => {
   }, [productName, productDescription]);
 
   return (
-    <Page>
-      <Layout>
-        <Layout.Section>
-          <Card sectioned>
-            <FormLayout>
-              <Heading>Shopify app with Node and React 🎉</Heading>
-              <Button size="large" primary={true} onClick={onClickShowQuery}>
-                {showQuery ? "Hide" : "Show"} Graphql Admin API Query Example
-              </Button>
-              <Button size="large" primary={true} onClick={onClickShowMutation}>
-                {showMutation ? "Hide" : "Show"} Graphql Admin API Mutation
-                Example
-              </Button>
-            </FormLayout>
-          </Card>
-          {showQuery && (
-            <Card
-              title="Query Shop - Graphql Admin API Query Example"
-              sectioned
-            >
-              <div>
-                {loading && <div>Loading...</div>}
-                {error && <div>Error :(</div>}
+    <Frame>
+      <Page>
+        <Layout>
+          <Layout.Section>
+            <Card sectioned>
+              <FormLayout>
+                <Heading>Shopify app with Node and React 🎉</Heading>
+                <Button size="large" primary={true} onClick={onClickShowQuery}>
+                  {showQuery ? "Hide" : "Show"} Graphql Admin API Query Example
+                </Button>
+                <Button
+                  size="large"
+                  primary={true}
+                  onClick={onClickShowMutation}
+                >
+                  {showMutation ? "Hide" : "Show"} Graphql Admin API Mutation
+                  Example
+                </Button>
+              </FormLayout>
+            </Card>
+            {showQuery && (
+              <Card
+                title="Query Shop - Graphql Admin API Query Example"
+                sectioned
+              >
+                <div>
+                  {loading && (
+                    <Spinner
+                      accessibilityLabel="Spinner example"
+                      size="small"
+                      color="teal"
+                    />
+                  )}
+                  {error && <div>Error :(</div>}
 
-                {data && data.shop && (
-                  <DataTable
-                    columnContentTypes={["text", "text"]}
-                    headings={["Field", "Value"]}
-                    rows={[
-                      ["ID", data.shop.id],
-                      ["Name", data.shop.name],
-                      ["Domain", data.shop.primaryDomain.host],
-                      ["MyShopify Domain", data.shop.myshopifyDomain],
-                      ["Plan", data.shop.plan.displayName],
-                      ["Timezone", data.shop.timezoneAbbreviation],
-                    ]}
-                  />
-                )}
-              </div>
-            </Card>
-          )}
-          {showMutation && (
-            <Card
-              title="Create Product - Graphql Admin API Mutation Example"
-              sectioned
-            >
-              <Form onSubmit={onSubmitMutation}>
-                <FormLayout>
-                  <TextField
-                    label="Product Name"
-                    onChange={(x) => setProductName(x)}
-                    value={productName}
-                    error={productNameError}
-                  />
-                  <TextField
-                    label="Product Description"
-                    onChange={(x) => setProductDescription(x)}
-                    multiline={10}
-                    value={productDescription}
-                    error={productDescriptionError}
-                  />
-                  <Button submit primary>
-                    Create Product
-                  </Button>
-                </FormLayout>
-              </Form>
-            </Card>
-          )}
-        </Layout.Section>
-      </Layout>
-    </Page>
+                  {data && data.shop && (
+                    <DataTable
+                      columnContentTypes={["text", "text"]}
+                      headings={["Field", "Value"]}
+                      rows={[
+                        ["ID", data.shop.id],
+                        ["Name", data.shop.name],
+                        ["Domain", data.shop.primaryDomain.host],
+                        ["MyShopify Domain", data.shop.myshopifyDomain],
+                        ["Plan", data.shop.plan.displayName],
+                        ["Timezone", data.shop.timezoneAbbreviation],
+                      ]}
+                    />
+                  )}
+                </div>
+              </Card>
+            )}
+            {showMutation && (
+              <Card
+                title="Create Product - Graphql Admin API Mutation Example"
+                sectioned
+              >
+                <Form onSubmit={onSubmitMutation}>
+                  <FormLayout>
+                    <TextField
+                      label="Product Name"
+                      onChange={(x) => setProductName(x)}
+                      value={productName}
+                      error={productNameError}
+                    />
+                    <TextField
+                      label="Product Description"
+                      onChange={(x) => setProductDescription(x)}
+                      multiline={10}
+                      value={productDescription}
+                      error={productDescriptionError}
+                    />
+                    <Button submit primary size="large">
+                      Create Product{" "}
+                      {createProductLoading && (
+                        <Spinner
+                          accessibilityLabel="Spinner example"
+                          size="large"
+                          color="white"
+                        />
+                      )}
+                    </Button>
+                  </FormLayout>
+                </Form>
+              </Card>
+            )}
+          </Layout.Section>
+        </Layout>
+      </Page>
+    </Frame>
   );
 };
 
