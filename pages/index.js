@@ -54,7 +54,6 @@ const CREATE_PRODUCT = gql`
   }
 `;
 
-//Force redeploy, this time with ENV variables
 const Index = () => {
   const [fetchStoreDetails, { loading, error, data }] = useLazyQuery(
     QUERY_SHOP
