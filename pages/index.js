@@ -36,6 +36,9 @@ const CREATE_PRODUCT = gql`
     productCreate(input: $input) {
       product {
         id
+        title
+        description
+        onlineStorePreviewUrl
       }
       shop {
         id
@@ -64,6 +67,8 @@ const Index = () => {
   const [showMutation, setShowMutation] = useState(false);
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
+  const [productNameError, setProductNameError] = useState("");
+  const [productDescriptionError, setProductDescriptionError] = useState("");
 
   const onClickShowQuery = useCallback(() => {
     if (!data) {
@@ -76,7 +81,33 @@ const Index = () => {
     setShowMutation((x) => !x);
   }, []);
 
-  const onSubmitMutation = useCallback(() => {}, []);
+  const onSubmitMutation = useCallback(async () => {
+    if (productName && productDescription) {
+      await createProduct({
+        variables: {
+          input: {
+            title: productName,
+            descriptionHtml: productDescription,
+          },
+        },
+      });
+
+      setProductNameError("");
+      setProductDescriptionError("");
+    } else {
+      if (!productName) {
+        setProductNameError("Product name is required");
+      } else {
+        setProductNameError("");
+      }
+
+      if (!productDescription) {
+        setProductDescriptionError("Product description is required");
+      } else {
+        setProductDescriptionError("");
+      }
+    }
+  }, [productName, productDescription]);
 
   return (
     <Page>
@@ -131,12 +162,14 @@ const Index = () => {
                     label="Product Name"
                     onChange={(x) => setProductName(x)}
                     value={productName}
+                    error={productNameError}
                   />
                   <TextField
                     label="Product Description"
                     onChange={(x) => setProductDescription(x)}
                     multiline={10}
                     value={productDescription}
+                    error={productDescriptionError}
                   />
                   <Button submit primary>
                     Create Product
